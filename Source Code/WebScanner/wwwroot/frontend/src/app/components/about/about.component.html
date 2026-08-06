@@ -1,0 +1,108 @@
+<section class="about-page py-5">
+  <div class="container text-light">
+    <h1 class="about-title text-center mb-4">About SphinxEye</h1>
+
+    <p class="about-intro text-center mb-5">
+      SphinxEye is built to simplify practical web security testing. We combine automated recon,
+      targeted vulnerability checks, and source code review to help teams understand where risk
+      exists and what to fix first. The goal is clear reporting with actionable findings.
+    </p>
+
+    <h2 class="section-title">Reconnaissance: What We Collect</h2>
+    <div class="row custom-row">
+      <div class="col-lg-4 col-md-6 mb-4" *ngFor="let card of reconCards">
+        <div class="about-card p-4 h-100">
+          <h4 class="card-inner-title">{{ card.title }}</h4>
+          <p class="card-inner-desc">{{ card.summary }}</p>
+
+          <div *ngIf="card.expanded" class="extra-text mt-3">
+            <ul class="text-start custom-about-list">
+              <li *ngFor="let item of card.details">{{ item }}</li>
+            </ul>
+          </div>
+
+          <button class="read-more" (click)="toggleCard(card)">
+            {{ card.expanded ? 'Show less ↑' : 'Show more →' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section-title">Vulnerabilities We Explain</h2>
+    <div class="row custom-row">
+      <div class="col-lg-4 col-md-6 mb-4" *ngFor="let card of vulnerabilityCards">
+        <div class="about-card p-4 h-100">
+          <h4 class="card-inner-title">{{ card.title }}</h4>
+          <p class="card-inner-desc">{{ card.summary }}</p>
+
+          <div *ngIf="card.expanded" class="extra-text mt-3">
+            <ul class="text-start custom-about-list">
+              <li *ngFor="let item of card.details">{{ item }}</li>
+            </ul>
+          </div>
+
+          <button class="read-more" (click)="toggleCard(card)">
+            {{ card.expanded ? 'Show less ↑' : 'Show more →' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section-title">Source Code Review</h2>
+    <div class="row custom-row">
+      <div class="col-lg-6 col-md-8 mb-4">
+        <div class="about-card p-4 h-100">
+          <h4 class="card-inner-title">{{ sourceCodeReview.title }}</h4>
+          <p class="card-inner-desc">{{ sourceCodeReview.summary }}</p>
+
+          <div *ngIf="sourceCodeReview.expanded" class="extra-text mt-3">
+            <ul class="text-start custom-about-list">
+              <li *ngFor="let item of sourceCodeReview.details">{{ item }}</li>
+            </ul>
+          </div>
+
+          <button class="read-more" (click)="toggleCard(sourceCodeReview)">
+            {{ sourceCodeReview.expanded ? 'Show less ↑' : 'Show more →' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section-title">Technologies</h2>
+    <div class="row custom-row">
+      <div class="col-lg-6 mb-4">
+        <div class="about-card p-4 h-100">
+          <h4 class="card-inner-title">{{ backendTech.title }}</h4>
+          <p class="card-inner-desc">{{ backendTech.summary }}</p>
+
+          <div *ngIf="backendTech.expanded" class="extra-text mt-3">
+            <ul class="text-start custom-about-list">
+              <li *ngFor="let item of backendTech.details">{{ item }}</li>
+            </ul>
+          </div>
+
+          <button class="read-more" (click)="toggleCard(backendTech)">
+            {{ backendTech.expanded ? 'Show less ↑' : 'Show more →' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="col-lg-6 mb-4">
+        <div class="about-card p-4 h-100">
+          <h4 class="card-inner-title">{{ frontendTech.title }}</h4>
+          <p class="card-inner-desc">{{ frontendTech.summary }}</p>
+
+          <div *ngIf="frontendTech.expanded" class="extra-text mt-3">
+            <ul class="text-start custom-about-list">
+              <li *ngFor="let item of frontendTech.details">{{ item }}</li>
+            </ul>
+          </div>
+
+          <button class="read-more" (click)="toggleCard(frontendTech)">
+            {{ frontendTech.expanded ? 'Show less ↑' : 'Show more →' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

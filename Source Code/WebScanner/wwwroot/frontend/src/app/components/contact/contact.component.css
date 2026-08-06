@@ -1,0 +1,72 @@
+.contact-page {
+  /* 🔥 الحركة السحرية: ترحيل علوي صريح لتعويض الهامش السالب وتنزيل الصفحة بالمللي من تحت النافبار */
+  margin-top: 100px !important;
+  
+  /* توحيد الخلفية مع درجة اللون البنفسجي الداكن للموقع */
+  background-color: #0b0518 !important; 
+  border-radius: 20px;
+  
+  /* توهج بنفسجي سيبراني فخم */
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.2); 
+  padding: 40px;
+  
+  /* إضافة برواز ناعم ليتماشى مع ثيم الزجاج */
+  border: 1px solid rgba(168, 85, 247, 0.1);
+}
+
+/* وهج نيون أنيق لعنوان الصفحة */
+.contact-title {
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
+}
+
+.form-control {
+  /* تحسين خلفية الحقول لتكون زجاجية داكنة */
+  background-color: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(168, 85, 247, 0.2) !important;
+  color: #fff !important;
+  backdrop-filter: blur(5px);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+/* تأثير التركيز (Focus) عند الضغط على الحقل للكتابة */
+.form-control:focus {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  outline: none !important;
+  /* إضاءة نيون بنفسجية عند الكتابة */
+  border-color: #a855f7 !important;
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.5) !important;
+  color: #fff !important;
+}
+
+/* تعديل إضافي عشان لون الكلام المؤقت (Placeholder) يكون واضح ومريح للعين */
+.form-control::placeholder {
+  color: #64748b !important;
+  opacity: 0.8;
+}
+
+/* 🔥 تنسيق زرار الإرسال البنفسجي النيون الموحد للمنصة */
+.btn-custom-purple {
+  background: linear-gradient(90deg, #a855f7, #7c3aed) !important;
+  color: #fff !important;
+  border: none !important;
+  padding: 12px 0 !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4) !important;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.btn-custom-purple:hover:not([disabled]) {
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.6) !important;
+  transform: translateY(-2px);
+}
+
+.btn-custom-purple:disabled {
+  background: #475569 !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+}

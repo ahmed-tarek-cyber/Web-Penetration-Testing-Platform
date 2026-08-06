@@ -1,0 +1,312 @@
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using WebScanner.Data;
+using WebScanner.Models;
+using System.IO;
+
+namespace WebScanner.Services
+{
+    public class ScannerService : IScannerService
+    {
+        private readonly HttpClient _http = new HttpClient();
+        private readonly AppDbContext _db;
+        private readonly AiScannerService _ai;
+
+        private static readonly string[] SqlPayloads = new[]
+        {
+            "' OR '1'='1",
+            "\" OR \"1\"=\"1",
+            "' OR '1'='1' -- ",
+            "\" OR 1=1 -- ",
+            "'; DROP TABLE users; --",
+            "' UNION SELECT NULL--",
+            "\" UNION SELECT NULL--"
+        };
+
+        private static readonly string[] XssPayloads = new[]
+        {
+            "<script>alert('xss_test')</script>",
+            "\"><script>alert(1)</script>",
+            "<img src=x onerror=alert(1)>",
+            "'\"><svg/onload=alert(1)>"
+        };
+
+        private static readonly string[] LfiPayloads = new[]
+        {
+            "../../etc/passwd",
+            "..%2F..%2Fetc%2Fpasswd",
+            "/etc/passwd",
+            "../../boot.ini",
+            "..\\..\\windows\\win.ini"
+        };
+
+        private static readonly Regex SqlErrorRegex = new Regex(
+            "(SQL syntax|mysql_fetch|ORA-|SQLSTATE|Unhandled Exception|sqlite3|syntax error in query|MySQL|Microsoft OLE DB|SQL Server|ODBC|Zend_Db_Statement_Exception)",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        public ScannerService(AppDbContext db, AiScannerService ai)
+        {
+            _db = db;
+            _ai = ai;
+            _http.Timeout = TimeSpan.FromSeconds(10);
+            _http.DefaultRequestHeaders.UserAgent.ParseAdd("WebScanner/1.0");
+        }
+
+        public async Task<ScanReport> RunScanAsync(ScanRequest request)
+        {
+            var report = new ScanReport { Url = request.Url };
+
+            var sqli = await ProbeWithPayloads(request, SqlPayloads, DetectSqlError);
+            if (sqli != null) report.Results.Add(sqli);
+
+            var xss = await ProbeWithPayloads(request, XssPayloads, DetectReflection);
+            if (xss != null) report.Results.Add(xss);
+
+            var lfi = await ProbeWithPayloads(request, LfiPayloads, DetectLfiContent);
+            if (lfi != null) report.Results.Add(lfi);
+
+            if (report.Results.Count == 0)
+            {
+                report.Results.Add(new Vulnerability
+                {
+                    Name = "No obvious issues detected",
+                    Severity = "Low",
+                    Description = "Passive scan found no clear evidences of SQLi, XSS, or LFI. Manual review advised."
+                });
+            }
+
+            foreach (var v in report.Results)
+            {
+                ApplyColors(v);
+                v.ScanReportId = report.Id;
+            }
+
+            _db.Reports.Add(report);
+            // Call AI analyzer to produce a human-readable summary (if configured)
+            try {
+                report.AiSummary = await _ai.AnalyzeReportAsync(report);
+            } catch { report.AiSummary = null; }
+            await _db.SaveChangesAsync();
+
+            return report;
+        }
+
+        private async Task<Vulnerability?> ProbeWithPayloads(ScanRequest request, string[] payloads, Func<string, string, bool> validator)
+        {
+            
+// baseline response to compare against
+string baselineBody = null;
+int baselineStatus = 0;
+try
+{
+    var baselineResp = await _http.GetAsync(request.Url);
+    baselineBody = await baselineResp.Content.ReadAsStringAsync();
+    baselineStatus = (int)baselineResp.StatusCode;
+}
+catch { baselineBody = null; baselineStatus = 0; }
+foreach (var p in payloads)
+            {
+                // inject into querystring (replace existing param values when present)
+                var urlQs = InjectPayloadIntoUrl(request.Url, request.Inputs, p);
+                try
+                {
+                    var r = await _http.GetAsync(urlQs);
+                    var body = await r.Content.ReadAsStringAsync();
+                    LogResponse(urlQs, p, (int)r.StatusCode, body?.Length > 200 ? body.Substring(0, 200) : body);
+                    if (validator(body, p) || (baselineBody != null && Math.Abs((body?.Length ?? 0) - (baselineBody?.Length ?? 0)) > 50) || ((int)r.StatusCode != baselineStatus))
+                    {
+                        return BuildVul(p, validator);
+                    }
+                }
+                catch { /* continue */ }
+
+                // try injecting into path
+                try
+                {
+                    var urlPath = InjectPayloadIntoPath(request.Url, p);
+                    var r2 = await _http.GetAsync(urlPath);
+                    var body2 = await r2.Content.ReadAsStringAsync();
+                    LogResponse(urlPath, p, (int)r2.StatusCode, body2?.Length > 200 ? body2.Substring(0, 200) : body2);
+                    if (validator(body2, p))
+                    {
+                        return BuildVul(p, validator);
+                    }
+                }
+                catch { /* continue */ }
+
+                // try POST if inputs provided
+                if (request.Inputs != null && request.Inputs.Count > 0)
+                {
+                    try
+                    {
+                        var form = new FormUrlEncodedContent(PrepareFormPayloads(request.Inputs, p));
+                        var r3 = await _http.PostAsync(request.Url, form);
+                        var body3 = await r3.Content.ReadAsStringAsync();
+                        LogResponse(request.Url, p, (int)r3.StatusCode, body3?.Length > 200 ? body3.Substring(0, 200) : body3);
+                        if (validator(body3, p) || (baselineBody != null && Math.Abs((body3?.Length ?? 0) - (baselineBody?.Length ?? 0)) > 50) || ((int)r3.StatusCode != baselineStatus))
+                        {
+                            return BuildVul(p, validator);
+                        }
+                    }
+                    catch { /* continue */ }
+                }
+            }
+            return null;
+        }
+
+        private Vulnerability BuildVul(string payload, Func<string, string, bool> validator)
+        {
+            string name = "Vulnerability";
+            string sev = "Medium";
+            string desc = $"Indicator found using payload: {payload}";
+
+            if (validator == DetectSqlError)
+            {
+                name = "SQL Injection";
+                sev = "High";
+                desc = $"Possible SQL injection detected. Server returned database error or indicators when using payload: {payload}";
+            }
+            else if (validator == DetectReflection)
+            {
+                name = "Reflected Cross-Site Scripting (XSS)";
+                sev = "Medium";
+                desc = $"Reflected XSS payload appears in the response unescaped: {payload}";
+            }
+            else if (validator == DetectLfiContent)
+            {
+                name = "Local File Inclusion (LFI)";
+                sev = "High";
+                desc = $"Response contains content resembling local files when using payload: {payload}";
+            }
+
+            return new Vulnerability
+            {
+                Name = name,
+                Severity = sev,
+                Description = desc
+            };
+        }
+
+        private bool DetectSqlError(string body, string payload)
+        {
+            if (string.IsNullOrEmpty(body)) return false;
+            return SqlErrorRegex.IsMatch(body);
+        }
+
+        private bool DetectReflection(string body, string payload)
+        {
+            if (string.IsNullOrEmpty(body)) return false;
+            if (body.IndexOf(payload, StringComparison.OrdinalIgnoreCase) >= 0) return true;
+            if (body.IndexOf(HtmlEncode(payload), StringComparison.OrdinalIgnoreCase) >= 0) return true;
+            return false;
+        }
+
+        private bool DetectLfiContent(string body, string payload)
+        {
+            if (string.IsNullOrEmpty(body)) return false;
+            return body.Contains("root:x:0:0:") || body.Contains("/bin/bash") || body.Contains("[boot]") || body.Contains("Administrator:");
+        }
+
+        private Dictionary<string, string> PrepareFormPayloads(Dictionary<string, string> inputs, string payload)
+        {
+            var outp = new Dictionary<string, string>();
+            foreach (var k in inputs.Keys)
+                outp[k] = payload;
+            return outp;
+        }
+
+        private string InjectPayloadIntoUrl(string baseUrl, Dictionary<string, string> inputs, string payload)
+        {
+            try
+            {
+                if (inputs != null && inputs.Count > 0)
+                {
+                    var q = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    foreach (var kv in inputs)
+                        q[kv.Key] = payload;
+                    var uri = new UriBuilder(baseUrl);
+                    uri.Query = q.ToString() ?? "";
+                    return uri.ToString();
+                }
+
+                var uriObj = new UriBuilder(baseUrl);
+                var qs = System.Web.HttpUtility.ParseQueryString(uriObj.Query ?? "");
+                if (qs.Count > 0)
+                {
+                    var keys = new List<string>();
+                    foreach (string k in qs) keys.Add(k);
+                    foreach (var k in keys)
+                    {
+                        qs[k] = payload;
+                    }
+                    uriObj.Query = qs.ToString();
+                    return uriObj.ToString();
+                }
+
+                if (baseUrl.Contains("?"))
+                    return baseUrl + "&test=" + Uri.EscapeDataString(payload);
+                else
+                    return baseUrl + "?test=" + Uri.EscapeDataString(payload);
+            }
+            catch
+            {
+                return baseUrl;
+            }
+        }
+
+        private string InjectPayloadIntoPath(string baseUrl, string payload)
+        {
+            try
+            {
+                var u = new Uri(baseUrl);
+                var path = u.AbsolutePath;
+                if (path.EndsWith("/")) path = path.TrimEnd('/');
+                var newPath = path + "/" + Uri.EscapeDataString(payload);
+                var nb = new UriBuilder(u) { Path = newPath };
+                return nb.Uri.ToString();
+            }
+            catch
+            {
+                return baseUrl;
+            }
+        }
+
+        private string HtmlEncode(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return text;
+            return System.Net.WebUtility.HtmlEncode(text);
+        }
+
+        private void LogResponse(string url, string payload, int statusCode, string snippet)
+        {
+            try
+            {
+                var logDir = Path.Combine(AppContext.BaseDirectory ?? ".", "Logs");
+                if (!Directory.Exists(logDir)) Directory.CreateDirectory(logDir);
+                var logFile = Path.Combine(logDir, "scanner_responses.log");
+                var line = $"{DateTime.UtcNow:O}\t{statusCode}\t{payload}\t{url}\t{(snippet ?? "").Replace("\n"," ").Replace("\r"," ").Replace("\t"," ")}";
+                File.AppendAllText(logFile, line + Environment.NewLine);
+            }
+            catch { }
+        }
+
+        private void ApplyColors(Vulnerability v)
+        {
+            if (v.Severity.Equals("High", StringComparison.OrdinalIgnoreCase))
+            {
+                v.Color = "#FF8A80"; v.AccentColor = "#D32F2F";
+            }
+            else if (v.Severity.Equals("Medium", StringComparison.OrdinalIgnoreCase))
+            {
+                v.Color = "#FFB74D"; v.AccentColor = "#F57C00";
+            }
+            else
+            {
+                v.Color = "#66BB6A"; v.AccentColor = "#2E7D32";
+            }
+        }
+    }
+}

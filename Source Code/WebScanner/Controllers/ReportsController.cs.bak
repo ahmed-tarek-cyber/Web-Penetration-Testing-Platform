@@ -1,0 +1,20 @@
+using Microsoft.AspNetCore.Mvc;
+using WebScanner.Models;
+
+[ApiController]
+[Route("api/[controller]")]
+public class ReportsController : ControllerBase
+{
+    private readonly InMemoryStore _store;
+    public ReportsController(InMemoryStore store) => _store = store;
+
+    [HttpGet("{id}")]
+    public IActionResult GetReport(string id)
+    {
+        if (!_store.Reports.TryGetValue(id, out var r)) return NotFound();
+        return Ok(r);
+    }
+
+    [HttpGet]
+    public IActionResult List() => Ok(_store.Reports.Values);
+}

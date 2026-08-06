@@ -1,0 +1,143 @@
+/* 🔥 الحركة القاضية: استهداف الكومبوننت نفسه وإجباره يتسحب لفوق ويلغي الـ margin-top العام لصفحة الهوم بالذات */
+:host {
+  display: block !important;
+  margin-top: -80px !important; 
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* سكشن الهيرو بالكامل - تم عزل السواد وإضافة لون الهوية الموحد */
+.hero {
+  position: relative;
+  text-align: center;
+  color: #fff;
+  overflow: hidden;
+  
+  /* 🔥 رجعناها 100vh كاملة عشان تملى الشاشة بالظبط بعد ما سحبنا الكومبوننت لفوق والسواد اختفى */
+  height: 100vh !important;
+  margin: 0 !important;
+  
+  /* صبغ الخلفية بنفس درجة الفوتر والنافبار البنفسجية الداكنة لمنع الفاصل */
+  background-color: #0b0518 !important; 
+  
+  /* استخدام Flexbox لتوسيط المحتوى بالمللي في نص الشاشة فوق الدوامة */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* Canvas خلفية الأنيميشن (Vortex) - قفل الأبعاد بالمللي لمنع الترحيل العلوي */
+#spider-bg {
+  position: absolute;
+  top: 0 !important; /* إجبار الأنميشن يبدأ من أول بكسل فوق في السقف */
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* فوق الخلفية البنفسجية وتحت الكلام */
+}
+
+/* محتوى الصفحة فوق الأنيميشن */
+.hero-content {
+  position: relative;
+  z-index: 2; /* إجبار المحتوى يظهر بوضوح فوق الدوامة */
+  max-width: 800px;
+  width: 100%;
+}
+
+.hero-title {
+  font-size: 4.5rem; /* حجم مناسب وجامد جداً للمشروع */
+  color: #fff;
+  margin: 0 0 15px;
+  font-weight: 900;
+  /* توهج بنفسجي نيون قوي يعبر عن SphinxEye */
+  text-shadow: 0 0 10px #a855f7, 
+               0 0 20px rgba(168, 85, 247, 0.8), 
+               0 0 35px rgba(168, 85, 247, 0.4);
+  letter-spacing: 2px;
+}
+
+.hero-desc {
+  color: #cbd5e1;
+  font-size: 1.1rem;
+  max-width: 650px;
+  margin: 0 auto 30px;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+.search-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 24px;
+}
+
+.search-input {
+  width: 500px;
+  max-width: 80%;
+  padding: 14px 20px;
+  border-radius: 30px;
+  /* برواز بنفسجي خفيف مدمج مع الزجاج */
+  border: 1px solid rgba(168, 85, 247, 0.2); 
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(5px); /* تأثير زجاجي ناعم */
+  color: #fff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #a855f7;
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* زر الفحص البنفسجي المضيء */
+.test-btn {
+  background: linear-gradient(90deg, #a855f7, #7c3aed);
+  color: #fff;
+  border: none;
+  padding: 14px 32px; 
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.test-btn:hover:not([disabled]) {
+  box-shadow: 0 6px 25px rgba(168, 85, 247, 0.7);
+  transform: translateY(-3px);
+}
+
+.test-btn:disabled {
+  background: #475569;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* صندوق عرض الأخطاء النيون */
+.error-box {
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  padding: 10px 20px;
+  border-radius: 20px;
+  display: inline-block;
+  margin-top: 15px;
+  font-size: 0.95rem;
+}
+
+/* أنميشن خفيف لظهور الخطأ */
+.animate-fade {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

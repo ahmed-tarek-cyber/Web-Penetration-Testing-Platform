@@ -1,0 +1,72 @@
+<div class="blog-section-wrapper py-5 text-light text-center">
+  <div class="container">
+    
+    <h2 class="mb-4 fw-bold blog-title">Security Tips & Insights</h2>
+    <p class="lead mb-5 text-muted-custom">
+      Stay informed with our latest articles about online safety and smart browsing.
+    </p>
+
+    <div class="row justify-content-center">
+    
+      <div class="col-md-4 mb-4">
+        <div class="blog-card p-4 h-100">
+          <h4 class="card-title">🕵️‍♂️ Detecting Malicious Domains</h4>
+          <p class="card-desc">
+            Identify phishing threats and fraudulent platforms before compromising your credentials.
+          </p>
+
+          <div *ngIf="expanded[0]" class="extra-text mt-3">
+            <ul class="text-start custom-list">
+              <li>Verify SSL certificates and strict HTTPS enforcement.</li>
+              <li>Analyze structural anomalies and deceptive input forms.</li>
+              <li>Scan for typosquatting and subtle domain manipulations.</li>
+            </ul>
+          </div>
+
+          <button class="read-more" (click)="toggleExpand(0)">
+            {{ expanded[0] ? 'Show less ↑' : 'Read more →' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <div class="blog-card p-4 h-100">
+          <h4 class="card-title">🔐 Core Cyber Hygiene</h4>
+          <p class="card-desc">Essential defensive practices to fortify your digital footprint daily.</p>
+
+          <div *ngIf="expanded[1]" class="extra-text mt-3">
+            <ul class="text-start custom-list">
+              <li>Implement high-entropy, unique cryptographic passwords.</li>
+              <li>Enforce multi-factor authentication across all endpoints.</li>
+              <li>Maintain regular patching for software and OS vulnerabilities.</li>
+            </ul>
+          </div>
+
+          <button class="read-more" (click)="toggleExpand(1)">
+            {{ expanded[1] ? 'Show less ↑' : 'Read more →' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <div class="blog-card p-4 h-100">
+          <h4 class="card-title">💻 Safe Browsing Protocol</h4>
+          <p class="card-desc">Mitigate risks effectively when navigating untrusted web environments.</p>
+
+          <div *ngIf="expanded[2]" class="extra-text mt-3">
+            <ul class="text-start custom-list">
+              <li>Intercept suspicious script executions and untrusted redirection.</li>
+              <li>Audit landing URLs carefully prior to data submission.</li>
+              <li>Restrict arbitrary file downloads from unverified sources.</li>
+            </ul>
+          </div>
+
+          <button class="read-more" (click)="toggleExpand(2)">
+            {{ expanded[2] ? 'Show less ↑' : 'Read more →' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

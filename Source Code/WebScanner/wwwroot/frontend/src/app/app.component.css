@@ -1,0 +1,12 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #000;
+  color: #fff;
+}
+
+main.main-content {
+  /* اضمن وجود padding-top لأن navbar ثابت */
+  padding-top: 80px;
+  min-height: calc(100vh - 160px);
+}

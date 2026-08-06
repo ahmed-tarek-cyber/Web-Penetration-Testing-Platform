@@ -1,0 +1,72 @@
+<div class="auth-page">
+  <div class="auth-box">
+    <h2 class="auth-title">Create Account</h2>
+
+    <form (ngSubmit)="onSubmit()">
+
+      <div class="input-group-custom">
+        <input type="text"
+               [(ngModel)]="username"
+               name="username"
+               placeholder="Username"
+               required 
+               class="auth-input"/>
+      </div>
+
+      <div class="input-group-custom">
+        <input type="email"
+               [(ngModel)]="email"
+               name="email"
+               placeholder="Email Address"
+               required 
+               class="auth-input"/>
+      </div>
+
+      <div class="input-group-custom">
+        <input type="password"
+               [(ngModel)]="password"
+               name="password"
+               placeholder="Password"
+               required 
+               class="auth-input"/>
+      </div>
+
+      <div class="input-group-custom">
+        <input type="password"
+               [(ngModel)]="confirmPassword"
+               name="confirmPassword"
+               placeholder="Confirm Password"
+               required 
+               class="auth-input"/>
+      </div>
+
+      <div class="invite-section-custom">
+        <label class="invite-label-custom">🔐 Invitation Code</label>
+        <input type="text"
+               class="auth-input invite-input-field"
+               [(ngModel)]="inviteCode"
+               name="inviteCode"
+               placeholder="Enter secret code..."
+               required />
+      </div>
+
+      <button type="submit" class="btn auth-btn" [disabled]="loading">
+        <span *ngIf="!loading">Register</span>
+        <span *ngIf="loading" class="spinner-container">
+          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          Checking Code...
+        </span>
+      </button>
+    </form>
+
+    <p class="switch-text">
+      Already have an account?
+      <a routerLink="/login" class="auth-link">Login here</a>
+    </p>
+
+    <div class="mt-3">
+      <p *ngIf="message" class="info-box success-box animate-fade">{{ message }}</p>
+      <p *ngIf="errorMessage" class="info-box error-box animate-fade">{{ errorMessage }}</p>
+    </div>
+  </div>
+</div>

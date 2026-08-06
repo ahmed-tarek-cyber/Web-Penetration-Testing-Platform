@@ -1,0 +1,45 @@
+<div class="result-card-custom animate-fade-in" *ngIf="data">
+
+  <div class="result-header-block mb-4">
+    <span class="target-label d-block mb-1">🎯 Scanned Target</span>
+    <h3 class="result-target-title">
+      <a *ngIf="data.Url" [href]="data.Url" target="_blank" class="cyber-target-link">{{ data.Url }}</a>
+    </h3>
+  </div>
+
+  <div class="status-row-custom mb-4 d-flex align-items-center gap-2">
+    <span class="status-label">Security Evaluation:</span>
+    <strong class="status-badge-neon"
+            [class.status-safe]="data.Status === 'Safe'"
+            [class.status-danger]="data.Status === 'Dangerous'"
+            [class.status-warning]="data.Status !== 'Safe' && data.Status !== 'Dangerous'">
+      {{ data.Status === 'Safe' ? '🛡️ ' + data.Status : '🚨 ' + data.Status }}
+    </strong>
+  </div>
+
+  <div class="issues-list-section mb-4 animate-slide-up" *ngIf="uniqueIssues.length > 0">
+    <h4 class="issues-section-title">🚨 Detected Vulnerabilities</h4>
+    <ul class="vuln-stack-list">
+      <li *ngFor="let name of uniqueIssues" class="vuln-stack-item animate-item">
+        <span class="alert-bullet">⚠️</span>
+        <span class="vuln-text-name">{{ name }}</span>
+      </li>
+    </ul>
+  </div>
+
+  <div *ngIf="uniqueIssues.length === 0 && data.Status === 'Safe'" class="no-issues-box-custom mb-4 text-center py-4">
+    <div class="shield-check-icon mb-2">💎</div>
+    <h5 class="clean-target-title">Clean Integrity Baseline</h5>
+    <p class="clean-target-desc">No immediate technical vulnerabilities or structural defects found during execution.</p>
+  </div>
+
+  <div class="actions-row-custom d-flex justify-content-start mb-3">
+    <button (click)="downloadFullReport()" class="btn-download-cyber">
+      ⬇ Download Compliance Report
+    </button>
+  </div>
+
+  <div class="card-footer-custom pt-3">
+    <small class="muted-timestamp-text">Scanned Timestamp: {{ data.CompletedAt | date:'medium' }}</small>
+  </div>
+</div>

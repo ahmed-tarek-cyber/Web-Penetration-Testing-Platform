@@ -1,0 +1,423 @@
+/* --- 1. حاوية الصفحة الرئيسية والخلفية الشفافة المدمجة --- */
+:host {
+  display: block;
+  min-height: 100vh;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  color: #eef2f7;
+  background: transparent; /* شفافة تماماً لدمج الـ Canvas البنفسجي الموحد */
+}
+
+.scr-page {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 110px 24px 40px;
+}
+
+/* سكشن الهيرو العلوي */
+.scr-hero {
+  margin-bottom: 35px;
+}
+
+.hero-kicker {
+  margin: 0 0 5px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: #bd73ff !important; /* بنفسجي فاتح مضيء وثابت */
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(168, 85, 247, 0.4);
+}
+
+.scr-main-title {
+  color: #fff;
+  font-size: 2.4rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+  text-shadow: 0 0 12px rgba(168, 85, 247, 0.5); /* وهج بنفسجي ملوكي للعنوان الرئيسي */
+}
+
+.scr-sub-text {
+  color: #94a3b8;
+  font-size: 1.05rem;
+  max-width: 700px;
+  line-height: 1.6;
+}
+
+/* --- 2. كارت رفع الملفات الزجاجي الاحترافي --- */
+.upload-card-custom {
+  border: 1px solid rgba(168, 85, 247, 0.15);
+  background: rgba(11, 5, 24, 0.4);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 15px rgba(168, 85, 247, 0.05);
+}
+
+.card-section-title {
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0 0 5px 0;
+}
+
+.card-section-subtitle {
+  color: #64748b;
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+/* زر الـ Reset الشفاف المتناسق مع البنفسجي */
+.ghost-btn-custom {
+  background: transparent;
+  color: #94a3b8;
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ghost-btn-custom:hover {
+  color: #fff;
+  border-color: #a855f7; /* توهج بنفسجي نيون */
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
+}
+
+/* منطقة السحب والإفلات المشفرة */
+.upload-area-box {
+  position: relative;
+  border: 1px dashed rgba(168, 85, 247, 0.3);
+  border-radius: 14px;
+  background: rgba(168, 85, 247, 0.01);
+  transition: all 0.3s ease;
+}
+
+.upload-area-box:hover,
+.upload-area-box.file-active {
+  border-color: #a855f7; /* يثبت على البنفسجي المضيء عند التفاعل */
+  background: rgba(168, 85, 247, 0.03);
+  box-shadow: inset 0 0 15px rgba(168, 85, 247, 0.1), 0 0 10px rgba(168, 85, 247, 0.05);
+}
+
+.file-hidden-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.upload-icon {
+  font-size: 2rem;
+  filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.4));
+}
+
+.file-name-text {
+  color: #fff;
+  font-size: 1rem;
+  display: block;
+}
+
+.file-size-text {
+  color: #bd73ff;
+  font-size: 0.85rem;
+  font-family: monospace;
+}
+
+.empty-text {
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+/* زر بدء الفحص بمزيج البنفسجي النيون الموحد */
+.primary-scr-btn {
+  background: linear-gradient(90deg, #a855f7, #7c3aed); /* تدرج بنفسجي صافي */
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.primary-scr-btn:hover:not([disabled]) {
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.6);
+  transform: translateY(-2px);
+}
+
+.primary-scr-btn:disabled {
+  background: #334155;
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* بنرات عرض التنبيهات */
+.banner-box {
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.error-banner {
+  background: rgba(239, 68, 68, 0.1);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.success-banner {
+  background: rgba(34, 197, 94, 0.1);
+  color: #86efac;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+/* --- 3. حالة جاري الفحص وجلب البيانات --- */
+.scanning-state-box {
+  background: rgba(168, 85, 247, 0.02);
+  border: 1px dashed rgba(168, 85, 247, 0.35);
+  border-radius: 16px;
+}
+
+.cyber-spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid rgba(168, 85, 247, 0.1);
+  border-top-color: #a855f7; /* الأنميشن يلف بالبنفسجي النيون */
+  animation: cyberSpin 0.8s linear infinite;
+}
+
+.scanning-title {
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.scanning-desc {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* --- 4. لوحة عرض الجدول المحفوظ (Dashboard) --- */
+.dashboard-section-title {
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0 0 6px 0;
+}
+
+.muted-text {
+  color: #64748b;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.table-wrap-custom {
+  width: 100%;
+  overflow-x: auto;
+  background: rgba(11, 5, 24, 0.3);
+  border: 1px solid rgba(168, 85, 247, 0.15);
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.reports-custom-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 800px;
+}
+
+.reports-custom-table th {
+  background: rgba(168, 85, 247, 0.05);
+  color: #bd73ff; /* البنفسجي الملوكي لرؤوس الجدول */
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.reports-custom-table td {
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(168, 85, 247, 0.1);
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  vertical-align: middle;
+}
+
+.scr-row-hover {
+  transition: background-color 0.3s ease;
+}
+.scr-row-hover:hover {
+  background-color: rgba(168, 85, 247, 0.04);
+}
+
+.scr-file-title {
+  color: #fff;
+  font-family: 'Consolas', monospace;
+}
+
+.scr-id-text {
+  font-size: 0.78rem;
+  margin-top: 3px;
+}
+
+.findings-count-cell {
+  color: #fbbf24;
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+/* بادجات مستويات خطورة الكود عالية التباين */
+.status-pill-custom {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: 8px;
+  min-width: 100px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.status-pill-custom.dangerous,
+.status-pill-custom.critical,
+.status-pill-custom.high {
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.status-pill-custom.suspicious,
+.status-pill-custom.medium {
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.status-pill-custom.safe,
+.status-pill-custom.low,
+.status-pill-custom.info {
+  color: #4ade80;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+/* أزرار الإجراءات داخل صف الجدول */
+.scr-action-btn {
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.scr-action-btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn-dl {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.25);
+  color: #60a5fa;
+}
+.btn-dl:hover {
+  background: #3b82f6;
+  color: #fff;
+}
+
+/* زر الـ AI Review مصلح ليتوهج بنفسجي نيون متناسق بالمللي مع السيم العام للموقع */
+.btn-ai {
+  background: rgba(168, 85, 247, 0.1); 
+  border-color: rgba(168, 85, 247, 0.3);
+  color: #bd73ff;
+}
+.btn-ai:hover {
+  background: linear-gradient(90deg, #a855f7, #7c3aed);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.5);
+}
+
+.btn-del {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+.btn-del:hover {
+  background: #ef4444;
+  color: #fff;
+}
+
+/* التمبلت الفارغ */
+.empty-results-box {
+  background: rgba(168, 85, 247, 0.01);
+  border: 1px dashed rgba(168, 85, 247, 0.15);
+  border-radius: 16px;
+  padding: 40px;
+}
+
+.empty-folder-icon {
+  font-size: 3rem;
+  opacity: 0.4;
+}
+
+.empty-title {
+  color: #cbd5e1;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.empty-desc {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+/* --- 5. حركات الأنميشن --- */
+@keyframes cyberSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-fade {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* توافق الشاشات المتجاوبة */
+@media (max-width: 768px) {
+  .scr-page {
+    padding: 90px 16px 32px;
+  }
+  .scr-main-title {
+    font-size: 1.9rem;
+  }
+  .row-actions-flex {
+    flex-direction: column;
+    width: 100%;
+  }
+  .scr-action-btn {
+    width: 100%;
+    text-align: center;
+  }
+}

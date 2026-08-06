@@ -1,0 +1,120 @@
+<div class="scr-page py-5">
+  <div class="container">
+    
+    <section class="scr-hero mb-5 text-center text-md-start">
+      <div class="hero-text-block">
+        <p class="eyebrow hero-kicker">Automated Auditing</p>
+        <h1 class="scr-main-title">Source Code Review</h1>
+        <p class="scr-sub-text">Analyze your frontend files for hidden security risks and logical vulnerabilities.</p>
+      </div>
+    </section>
+
+    <section class="upload-card-custom p-4 mb-5">
+      <div class="upload-header d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+          <h2 class="card-section-title">Upload File</h2>
+          <p class="card-section-subtitle">Allowed formats: .js, .html, .htm • Max size: 5 MB</p>
+        </div>
+        <button type="button" class="ghost-btn-custom" (click)="clearSelection()">Reset</button>
+      </div>
+
+      <div class="upload-area-box mb-4" [ngClass]="{'file-active': selectedFile}">
+        <input type="file" accept=".js,.html,.htm" (change)="onFileSelected($event)" class="file-hidden-input" id="scrFile" />
+        <label for="scrFile" class="w-100 h-100 d-flex flex-column align-items-center justify-content-center cursor-pointer py-4">
+          <div class="upload-icon mb-2">📁</div>
+          
+          <div class="upload-meta" *ngIf="selectedFile; else emptyState">
+            <strong class="file-name-text">{{ selectedFile.name }}</strong>
+            <span class="file-size-text">{{ selectedFile.size | number }} bytes</span>
+          </div>
+          
+          <ng-template #emptyState>
+            <div class="upload-meta empty-text">Click or drag a file here to start the review.</div>
+          </ng-template>
+        </label>
+      </div>
+
+      <div class="action-row d-flex justify-content-end">
+        <button type="button" class="btn primary-scr-btn" [disabled]="!selectedFile || isScanning" (click)="startScan()">
+          <span *ngIf="!isScanning">🚀 Start Review</span>
+          <span *ngIf="isScanning" class="d-flex align-items-center">
+            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+            Scanning...
+          </span>
+        </button>
+      </div>
+
+      <div class="mt-3">
+        <div class="banner-box error-banner animate-fade" *ngIf="error">⚠️ {{ error }}</div>
+        <div class="banner-box success-banner animate-fade" *ngIf="successMessage">✅ {{ successMessage }}</div>
+      </div>
+    </section>
+
+    <section class="scanning-state-box p-4 mb-5 text-center d-flex flex-column align-items-center justify-content-center" *ngIf="isScanning">
+      <div class="cyber-spinner mb-3"></div>
+      <div>
+        <h3 class="scanning-title">Parsing Engine Active</h3>
+        <p class="scanning-desc">Hold tight. The source review engine is tokenizing and parsing your file structure now.</p>
+      </div>
+    </section>
+
+    <section class="dashboard-scr-section">
+      <div class="dashboard-head mb-4">
+        <p class="eyebrow">Repository</p>
+        <h2 class="dashboard-section-title">Saved Reviews</h2>
+        <p class="muted-text">Each static scan is preserved here. Open the AI Review or HTML report to trace findings.</p>
+      </div>
+
+      <div class="table-wrap-custom" *ngIf="reports.length; else emptyDashboard">
+        <table class="reports-custom-table">
+          <thead>
+            <tr>
+              <th>File Context</th>
+              <th>Scan Date</th>
+              <th>Security Level</th>
+              <th>Findings</th>
+              <th class="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of reports" class="scr-row-hover">
+              <td class="file-cell-data">
+                <strong class="scr-file-title">{{ item.fileName }}</strong>
+                <small class="scr-id-text d-block text-muted">{{ item.reportId }}</small>
+              </td>
+              <td class="scr-date-text">{{ item.createdAt | date:'medium' }}</td>
+              <td>
+                <span class="status-pill-custom" [ngClass]="(item.overallStatus || item.status || '').toLowerCase()">
+                  {{ item.overallStatus || item.status }}
+                </span>
+              </td>
+              <td class="findings-count-cell font-monospace">{{ item.totalFindings }}</td>
+              <td>
+                <div class="row-actions-flex d-flex gap-2 justify-content-center">
+                  <button type="button" class="scr-action-btn btn-dl" (click)="downloadReport(item)" title="Download Report">
+                    Download
+                  </button>
+                  <button type="button" class="scr-action-btn btn-ai" (click)="openChatForCode(item)" title="Consult AI">
+                    AI Review
+                  </button>
+                  <button type="button" class="scr-action-btn btn-del" (click)="deleteReport(item)" title="Delete Entry">
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ng-template #emptyDashboard>
+        <div class="empty-results-box text-center py-5">
+          <div class="empty-folder-icon mb-3">📂</div>
+          <h3 class="empty-title">No saved reviews yet</h3>
+          <p class="empty-desc">Upload your first JS or HTML file above to invoke the secure analyzer.</p>
+        </div>
+      </ng-template>
+    </section>
+
+  </div>
+</div>

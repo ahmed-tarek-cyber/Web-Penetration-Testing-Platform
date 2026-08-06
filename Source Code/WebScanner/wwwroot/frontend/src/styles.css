@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+:root {
+  /* تعديل الألوان للهوية البنفسجية السيبرانية لـ SphinxEye */
+  --accent: #a855f7; 
+  --bg: #0b0518;      /* نفس درجة خلفية الفوتر والـ sections */
+  --panel: rgba(168, 85, 247, 0.05);
+  --muted: #cbd5e1;
+}
+
+* { 
+  box-sizing: border-box; 
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: var(--bg) !important; /* إجبار الخلفية العامة تكون البنفسجي الداكن لمنع أي تسريب أسود */
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  
+  /* الحل النهائي لمنع الحتة السوداء والسكرول الأفقي */
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+}
+
+/* 🔥 تصفير هوامش البوتستراب للنافبار والـ Elements تماماً لنسف السطر الأسود الفاصل 🔥 */
+.navbar, .navbar-collapse, app-navbar, header {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  top: 0 !important;
+}
+
+a { 
+  color: var(--accent); 
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+a:hover {
+  text-shadow: 0 0 8px rgba(168, 85, 247, 0.6);
+}
+
+/* إصلاح شامل لكل الـ Rows في بوتستراب عشان م تخرجش برا الشاشة يمين */
+.row {
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  width: 100% !important;
+}
+
+/* تحسين شكل السكرول بار العمودي ليليق بالثيم */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0b0518;
+}
+::-webkit-scrollbar-thumb {
+  background: #a855f7;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #bd73ff;
+}
+
+/* 🔥 الحاوية العالمية للمحتوى - تضمن نزول كل الصفحات تحت النافبار أوتوماتيك وبشكل نظيف */
+.main-content {
+  margin-top: 80px !important; 
+  min-height: calc(100vh - 80px);
+}
+
+/* small responsive tweaks */
+@media (max-width: 600px) {
+  .search-input { width: 80% !important; }
+  .auth-box, .register-box { width: 90%; padding: 22px; }
+}

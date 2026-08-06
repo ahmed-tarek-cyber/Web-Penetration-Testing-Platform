@@ -1,0 +1,161 @@
+<div class="main-container">
+  <div class="header-section">
+    <div class="title-block d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div class="ai-title-group d-flex align-items-center gap-3">
+        <span class="main-ai-icon">✨</span>
+        <div class="text-group">
+          <h2 class="assistant-main-title">AI Assistant</h2>
+          <p class="assistant-sub-title">Get AI-powered insights about your scan results</p>
+        </div>
+      </div>
+      <button class="back-btn-custom" (click)="goBack()">
+        ← {{ isCodeReview ? 'Back to Code Review' : 'Back to Dashboard' }}
+      </button>
+    </div>
+
+    <div class="scan-summary-bar" *ngIf="scanData && (scanData.url || scanData.fileName); else loadingHeader">
+
+      <div class="info-card-custom">
+        <div class="icon-wrapper url-icon">
+          <span class="icon-span">{{ isCodeReview ? '📄' : '🌐' }}</span>
+        </div>
+        <div class="text-content">
+          <label>{{ isCodeReview ? 'Scanned File' : 'Current Target' }}</label>
+          <span class="value link-value">{{ scanData.url }}</span>
+        </div>
+      </div>
+
+      <div class="info-card-custom">
+        <div class="icon-wrapper date-icon">
+          <span class="icon-span">📅</span>
+        </div>
+        <div class="text-content">
+          <label>Scan Date</label>
+          <span class="value">{{ (scanData.date || scanData.createdAt) | date:'medium' }}</span>
+        </div>
+      </div>
+
+      <div class="info-card-custom">
+        <div class="icon-wrapper status-icon" [ngClass]="(scanData.status === 'Safe') ? 'safe-bg' : 'dangerous-bg'">
+          <span class="icon-span">{{ (scanData.status === 'Safe') ? '🛡️' : '🚨' }}</span>
+        </div>
+        <div class="text-content">
+          <label>Security Status</label>
+          <span class="badge-custom" [ngClass]="(scanData.status === 'Safe') ? 'safe-badge' : 'dangerous-badge'">
+            {{ scanData.status }}
+          </span>
+        </div>
+      </div>
+
+      <div class="info-card-custom">
+        <div class="icon-wrapper findings-icon">
+          <span class="icon-span">🔍</span>
+        </div>
+        <div class="text-content">
+          <label>Total Findings</label>
+          <span class="value count-value">{{ scanData.findingsCount || 0 }}</span>
+        </div>
+      </div>
+
+    </div>
+    
+    <ng-template #loadingHeader>
+      <div class="scan-summary-bar loading-bar-custom d-flex align-items-center justify-content-center">
+        <p class="loading-text">
+          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          ⏳ Fetching and analyzing scan details...
+        </p>
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="content-body-grid">
+    
+    <div class="sidebar-section-custom">
+      <h3 class="sidebar-title">Quick Actions</h3>
+      <div class="action-buttons-stack">
+        <button class="action-btn-custom" (click)="quickAction('explain')">
+          <span class="btn-icon">📄</span>
+          <div class="btn-inner-text">
+            <strong>Explain Vulnerabilities</strong>
+            <span>Get explanation of all issues</span>
+          </div>
+        </button>
+        
+        <button class="action-btn-custom warning-btn" (click)="quickAction('fix')">
+          <span class="btn-icon">⚠️</span>
+          <div class="btn-inner-text">
+            <strong>How To Fix</strong>
+            <span>Get remediation steps</span>
+          </div>
+        </button>
+        
+        <button class="action-btn-custom" (click)="quickAction('code')">
+          <span class="btn-icon">💻</span>
+          <div class="btn-inner-text">
+            <strong>Generate Secure Code</strong>
+            <span>Get secure code examples</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div class="chat-section-custom">
+      <div class="chat-inner-box">
+        <div class="chat-window-header-custom">
+          <div class="chat-title-block d-flex align-items-center gap-2">
+            <span class="chat-ai-icon-span">🤖</span>
+            <div class="chat-status-text">
+              <h4>AI Chatbot</h4>
+              <p class="status-online">Online | Ready to assist with your scan analysis</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-messages-container" #chatMessages>
+          <div *ngFor="let msg of messages" class="message-wrapper-custom" [ngClass]="msg.Role?.toLowerCase()">
+            <div class="avatar-box">
+              <span *ngIf="msg.Role?.toLowerCase() === 'assistant'">🤖</span>
+              <span *ngIf="msg.Role?.toLowerCase() === 'user'">👤</span>
+            </div>
+            <div class="message-bubble-custom">
+              <div class="message-content-text">
+                <div *ngIf="msg.Role?.toLowerCase() === 'assistant'">{{ msg.Content }}</div>
+                <span *ngIf="msg.Role?.toLowerCase() === 'user'">{{ msg.Content }}</span>
+              </div>
+
+              <div *ngIf="msg.TechnicalContext" class="technical-context-wrapper">
+                <button (click)="msg.showDetails = !msg.showDetails" class="toggle-context-btn-custom">
+                  {{ msg.showDetails ? '🔽 Hide Technical Context' : '▶️ Show Technical Context (Prompt)' }}
+                </button>
+                <pre *ngIf="msg.showDetails" class="technical-context-box-pre">{{ msg.TechnicalContext }}</pre>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="isLoadingResponse" class="message-wrapper-custom assistant">
+            <div class="avatar-box">
+              <span>🤖</span>
+            </div>
+            <div class="message-bubble-custom">
+              <div class="typing-indicator-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input-area-custom">
+          <input [(ngModel)]="newMessage"
+                 (keyup.enter)="newMessage.trim() ? send() : null"
+                 placeholder="Ask anything about this scan..."
+                 class="chat-input-field" />
+          <button (click)="send()" class="send-btn-icon" [disabled]="!newMessage.trim()">➤</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

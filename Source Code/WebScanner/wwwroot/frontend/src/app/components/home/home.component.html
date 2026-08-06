@@ -1,0 +1,30 @@
+<section class="hero" (mousemove)="onMouseMove($event)">
+  <canvas id="spider-bg"></canvas>
+
+  <div class="hero-content">
+    <h1 class="hero-title">SphinxEye</h1>
+    <p class="hero-desc">
+      We test links and websites for malware, vulnerabilities, and data analysis.
+    </p>
+
+    <div class="search-wrapper">
+      <input type="text"
+             [(ngModel)]="query"
+             placeholder="company.com or https://example.com"
+             class="search-input"
+             (keyup.enter)="onSearch()" />
+             
+      <button class="btn test-btn" (click)="onSearch()" [disabled]="searching">
+        <span *ngIf="!searching">Test</span>
+        <span *ngIf="searching" class="spinner-container">
+          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          Scanning...
+        </span>
+      </button>
+    </div>
+
+    <div class="mt-4">
+      <div *ngIf="error" class="error-box animate-fade">{{ error }}</div>
+    </div>
+  </div>
+</section>

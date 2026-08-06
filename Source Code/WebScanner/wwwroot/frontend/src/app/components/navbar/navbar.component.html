@@ -1,0 +1,40 @@
+<nav class="navbar fixed-top navbar-expand-lg">
+  <div class="container-fluid px-4">
+    <div class="nav-left d-flex align-items-center">
+      <a routerLink="/" class="brand d-flex align-items-center">
+        <img src="assets/sphinxeye-logo.png" 
+             alt="SphinxEye logo" 
+             class="logo-img" 
+             style="height: 45px; width: auto; max-width: 180px; object-fit: contain;">
+      </a>
+      <a routerLink="/about" class="btn nav-custom-btn about-btn ms-3">About</a>
+    </div>
+
+    <div class="nav-right d-flex align-items-center gap-2">
+      <a routerLink="/" class="btn nav-custom-btn home-btn">Home</a>
+
+      <a routerLink="/dashboard"
+         class="btn nav-custom-btn dashboard-btn"
+         *ngIf="username">Dashboard</a>
+
+      <a routerLink="/source-code-review"
+         class="btn nav-custom-btn review-btn"
+         *ngIf="username">Source Code Review</a>
+
+      <ng-container *ngIf="!username">
+        <a routerLink="/login" class="btn nav-custom-btn login-btn">Login</a>
+      </ng-container>
+
+      <div *ngIf="username" class="user-profile-container d-flex align-items-center ms-3">
+        <div class="avatar-circle">
+          {{ username.charAt(0).toUpperCase() }}
+        </div>
+
+        <div class="user-info-dropdown">
+          <span class="greeting-text">Hi, {{ username }}</span>
+          <button (click)="onLogout()" class="logout-btn">Sign out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

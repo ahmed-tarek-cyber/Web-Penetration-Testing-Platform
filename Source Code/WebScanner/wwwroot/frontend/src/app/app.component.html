@@ -1,0 +1,11 @@
+<app-navbar></app-navbar>
+
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>
+
+<ng-container *ngIf="showGlobalSections">
+  <app-blog></app-blog>
+</ng-container>
+
+<app-footer></app-footer>

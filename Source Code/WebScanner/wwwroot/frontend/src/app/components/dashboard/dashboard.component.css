@@ -1,0 +1,339 @@
+/* --- 1. حاوية الصفحة الرئيسية والخلفية الشفافة --- */
+:host {
+  display: block;
+  min-height: 100vh;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  color: #fff;
+  background: transparent; /* جعلها شفافة عشان الـ Canvas اللي وراها يظهر بسلاسة */
+}
+
+.dashboard-container {
+  width: 100%;
+  /* 🔥 الحركة السحرية: ترحيل علوي صريح بمقدار 100px لمنع التداخل تحت النافبار */
+  margin-top: 100px !important;
+  /* إضافة مساحات داخلية ناعمة يمين وشمال عشان الجدول يتنفس ويبقى متناسق */
+  padding-left: 24px !important;
+  padding-right: 24px !important;
+  padding-bottom: 40px !important;
+}
+
+.dashboard-title {
+  color: #fff;
+  font-size: 2.2rem;
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+  margin: 0;
+}
+
+.text-muted-custom {
+  color: #94a3b8;
+  font-size: 1rem;
+}
+
+/* حالة التحميل السيبرانية */
+.loading-state-custom {
+  padding: 40px;
+  background: rgba(168, 85, 247, 0.03);
+  border: 1px solid rgba(168, 85, 247, 0.15);
+  border-radius: 12px;
+  color: #cbd5e1;
+  font-weight: 500;
+}
+
+.text-purple {
+  color: #a855f7 !important;
+}
+
+/* --- 2. تصميم الجدول الزجاجي الشفاف (Glassmorphism) --- */
+.table-responsive-custom {
+  width: 100%;
+  overflow-x: auto;
+  background: rgba(11, 5, 24, 0.6) !important; /* خلفية داكنة خفيفة مدمجة مع الزجاج لضمان وضوح البيانات */
+  border: 1px solid rgba(168, 85, 247, 0.15); /* برواز بنفسجي ناعم */
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.custom-dashboard-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 0;
+}
+
+.custom-dashboard-table th {
+  background: rgba(168, 85, 247, 0.06);
+  color: #bd73ff; /* لون بنفسجي فاتح مريح للعناوين */
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.custom-dashboard-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(168, 85, 247, 0.1);
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  vertical-align: middle;
+}
+
+/* تأثير حركي ناعم عند مرور الماوس على الصف */
+.table-row-hover {
+  transition: background-color 0.3s ease;
+}
+
+.table-row-hover:hover {
+  background-color: rgba(168, 85, 247, 0.05);
+}
+
+.target-url-cell strong {
+  color: #fff;
+  font-family: 'Consolas', monospace; /* جعل الروابط مريحة للقراءة كسيكيورتي */
+}
+
+/* بادجات الحالة النيون */
+.badge-custom {
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  display: inline-block;
+  text-align: center;
+}
+
+.status-danger {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.1);
+}
+
+.status-safe {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.1);
+}
+
+/* --- 3. تصميم أزرار التحكم المدمجة --- */
+.dash-btn {
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dash-btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn-view {
+  background: rgba(168, 85, 247, 0.1);
+  border-color: rgba(168, 85, 247, 0.3);
+  color: #bd73ff;
+}
+.btn-view:hover {
+  background: linear-gradient(90deg, #a855f7, #7c3aed);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.4);
+}
+
+.btn-chat {
+  background: rgba(236, 72, 153, 0.1); /* زر الشات بلون بينك نيون مميز */
+  border-color: rgba(236, 72, 153, 0.3);
+  color: #f472b6;
+}
+.btn-chat:hover {
+  background: linear-gradient(90deg, #ec4899, #be185d);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(236, 72, 153, 0.4);
+}
+
+.btn-download {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: #60a5fa;
+}
+.btn-download:hover {
+  background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+}
+
+.btn-delete {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.25);
+  color: #f87171;
+}
+.btn-delete:hover {
+  background: linear-gradient(90deg, #ef4444, #b91c1c);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+}
+
+/* --- 4. تصميم الـ Modal الزجاجي الاحترافي --- */
+.modal-overlay-custom {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(11, 5, 24, 0.75); /* تعتيم بنفسجي داكن جداً متناسق */
+  backdrop-filter: blur(8px);
+  z-index: 1100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.modal-content-custom {
+  background: rgba(15, 10, 30, 0.9);
+  border: 1px solid rgba(168, 85, 247, 0.25); /* برواز مضيء */
+  width: 500px;
+  max-width: 100%;
+  border-radius: 16px;
+  color: white;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(168, 85, 247, 0.15);
+  overflow: hidden;
+}
+
+.modal-header-custom {
+  padding: 20px 25px;
+  border-bottom: 1px solid rgba(168, 85, 247, 0.15);
+  background: rgba(168, 85, 247, 0.03);
+}
+
+.modal-title-text {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.close-btn-custom {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #94a3b8;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  transition: color 0.3s ease;
+}
+.close-btn-custom:hover {
+  color: #fff;
+}
+
+.modal-body-custom {
+  padding: 25px;
+  max-height: 65vh;
+  overflow-y: auto;
+}
+
+.modal-loading-text {
+  color: #94a3b8;
+  font-size: 0.95rem;
+}
+
+/* قائمة الثغرات داخل الـ Modal */
+.vuln-list-custom {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.vuln-item-alert {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: rgba(239, 68, 68, 0.08); /* لون أحمر سيكيورتي خفيف للإنذار */
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.vuln-item-alert:hover {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.4);
+  transform: translateX(4px);
+}
+
+.vuln-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.vuln-name {
+  font-size: 0.95rem;
+  color: #fca5a5;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* صندوق النجاح لو الموقع سليم تماماً */
+.no-vulns-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.shield-success-icon {
+  font-size: 3.5rem;
+  filter: drop-shadow(0 0 15px rgba(34, 197, 94, 0.4));
+}
+
+.success-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #4ade80;
+  margin-bottom: 8px;
+}
+
+.success-desc {
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+/* --- 5. أنميشن الحركات والتأثيرات الفنية --- */
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.animate-scale-up {
+  animation: scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.animate-slide-left {
+  animation: slideLeft 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideLeft {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
